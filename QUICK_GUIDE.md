@@ -1,6 +1,6 @@
 # QUICK GUIDE 
 
-If you just downloaded and installed the ML-DFT package and do not care about how it works but just want to start making electronic structure predictions, this is your guide. For more details about the package, and to use it without employing your own resources, follow the tutorials.
+If you just downloaded and installed the ML-DFT package and do not care about how it works but just want to start making electronic structure predictions, this is your guide. For more details about the package, and to use it without employing your own resources, use the provided Google Colab and follow the tutorials.
 
 ## Making predictions with trained models from paper
 You will need the following files in the folder you are going to make the predictions on:
@@ -59,4 +59,4 @@ Once you have the necessary files and command values in inp_params.py, just do:
 python ML_DFT.py
 ```  
 
-If you run into an issue or have any questions about the code, we first recommend going through the tutorials. If it does not solve your problem, please contact the authors.
+If you run into an issue or have any questions about the code, we first recommend going through the tutorials and Google Colab. If it does not solve your problem, please contact the authors.

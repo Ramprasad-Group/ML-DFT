@@ -6,7 +6,7 @@ If you just downloaded and installed the ML-DFT package and do not care about ho
 You will need the following files in the folder you are going to make the predictions on:
 
 * predict.csv : contains the direction to the POSCAR files with the structures
-* KS_emulator.py : code to run. No need to modify anything
+* ML_DFT.py : code to run. No need to modify anything
 * inp_params.py : Set of input commands to specify the code what to do. Look below to see what each command means.
 
 ## Training (and making predictions)
@@ -14,7 +14,7 @@ You will need the following files in the folder you are going to retrain the mod
 
 * Train.csv and Val.csv: location of POSCAR files to use for training and validation.
 * (predict.csv : contain the direction to the POSCAR files with the structures)
-* KS_emulator.py : code to run. No need to modify anything
+* ML_DFT.py : code to run. No need to modify anything
 * inp_params.py : Set of input commands for the code. Look below to see what each command means.
 
 IMPORTANT!: Depending on what model you want to retrain you will need the following files in your database:

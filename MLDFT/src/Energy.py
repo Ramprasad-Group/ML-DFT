@@ -153,6 +153,10 @@ def init_Emod(padding_size):
         input3=Input(shape=(padding_size,709))
         input4=Input(shape=(padding_size,709))
         input5=Input(shape=(1,))
+        input6=Input(shape=(padding_size,1))
+        input7=Input(shape=(padding_size,1))
+        input8=Input(shape=(padding_size,1))
+        input9=Input(shape=(padding_size,1))
         model_out_CP=TimeDistributed(single_atom_modelC_E(),name='atom_C_P')(input1)
         model_out_HP=TimeDistributed(single_atom_modelH_E(),name='atom_H_P')(input2)
         model_out_NP=TimeDistributed(single_atom_modelN_E(),name='atom_N_P')(input3)
@@ -162,13 +166,17 @@ def init_Emod(padding_size):
         EN,forcesN,pressN=Lambda(lambda x: tf.split(x,[1,3,6],axis=-1))(model_out_NP)
         EO,forcesO,pressO=Lambda(lambda x: tf.split(x,[1,3,6],axis=-1))(model_out_OP)
         model_added=Add()([pressC, pressH, pressN,pressO])
+        EC=Lambda(lambda x: tf.math.multiply(x[0],x[1]),name='new_EC')([input6,EC])
+        EH=Lambda(lambda x: tf.math.multiply(x[0],x[1]),name='new_EH')([input7,EH])
+        EN=Lambda(lambda x: tf.math.multiply(x[0],x[1]),name='new_EN')([input8,EN])
+        EO=Lambda(lambda x: tf.math.multiply(x[0],x[1]),name='new_EO')([input9,EO])
         E_added=Add()([EC, EH,EN,EO])
         E_tot=Lambda(lambda x: tf.keras.backend.sum(x,axis=1))(E_added)
         E_tot=Lambda(lambda x: x/input5,name='Energy')(E_tot)
         model_p=Lambda(lambda x: tf.keras.backend.sum(x,axis=1))(model_added)
         model_p=Lambda(lambda x: x/input5,name='Press')(model_p)
 #
-        model= Model(inputs=[input1,input2,input3,input4,input5], outputs=[E_tot,forcesC,forcesH,forcesN,forcesO,model_p])
+        model= Model(inputs=[input1,input2,input3,input4,input5,input6,input7,input8,input9], outputs=[E_tot,forcesC,forcesH,forcesN,forcesO,model_p])
 
         opt = Adam(lr=0.0001, beta_1=0.9, beta_2=0.999)
         model.compile(loss=["mean_squared_error",se,se,se,se,"mean_squared_error"],optimizer=opt,loss_weights=[1000,10,10,10,10,0.1])
@@ -186,13 +194,13 @@ def model_weights(train_e,new_weights_e,model_E):
         model_E.load_weights(CONFIG_PATH)
 
 
-def energy_predict(X_C,X_H,X_N,X_O,basis1,basis2,basis3,basis4,num_atoms,model_E):
+def energy_predict(X_C,X_H,X_N,X_O,basis1,basis2,basis3,basis4,C_m,H_m,N_m,O_m,num_atoms,model_E):
     X_C=np.concatenate((X_C,basis1), axis=-1)
     X_H=np.concatenate((X_H,basis2), axis=-1)
     X_N=np.concatenate((X_N,basis3), axis=-1)
     X_O=np.concatenate((X_O,basis4), axis=-1)
     model_weights(train_e,new_weights_e,model_E)
-    E,ForC,ForH,ForN,ForO,pred_press=model_E.predict([X_C,X_H,X_N,X_O,num_atoms], batch_size=1)
+    E,ForC,ForH,ForN,ForO,pred_press=model_E.predict([X_C,X_H,X_N,X_O,num_atoms,C_m,H_m,N_m,O_m], batch_size=1)
     Pred_Energy=(-1)*E
     ForC=np.squeeze(ForC)
     ForH=np.squeeze(ForH)
@@ -214,7 +222,7 @@ def e_train(file_loc,tot_atoms):
 
     return Energy,forces_data,press
 
-def retrain_emodel(X_C,X_H,X_N,X_O,basis1,basis2,basis3,basis4,X_at,ener_ref,forces1,forces2,forces3,forces4,press_ref,X_val_C,X_val_H,X_val_N,X_val_O,basis1V,basis2V,basis3V,basis4V,X_at_val,ener_val,forces1V,forces2V,forces3V,forces4V,press_val,ert_epochs,ert_batch_size,ert_patience,padding_size):
+def retrain_emodel(X_C,X_H,X_N,X_O,C_m,H_m,N_m,O_m,basis1,basis2,basis3,basis4,X_at,ener_ref,forces1,forces2,forces3,forces4,press_ref,X_val_C,X_val_H,X_val_N,X_val_O,C_mV,H_mV,N_mV,O_mV,basis1V,basis2V,basis3V,basis4V,X_at_val,ener_val,forces1V,forces2V,forces3V,forces4V,press_val,ert_epochs,ert_batch_size,ert_patience,padding_size):
     X_C=np.concatenate((X_C,basis1), axis=-1)
     X_H=np.concatenate((X_H,basis2), axis=-1)
     X_N=np.concatenate((X_N,basis3), axis=-1)
@@ -230,4 +238,4 @@ def retrain_emodel(X_C,X_H,X_N,X_O,basis1,basis2,basis3,basis4,X_at,ener_ref,for
     early_stopping_cb = EarlyStopping(patience=ert_patience,restore_best_weights=True)
     callbacks_list = [checkpoint,early_stopping_cb]
 
-    history=rtmodel.fit([X_C,X_H,X_N,X_O,X_at],[ener_ref,forces1,forces2,forces3,forces4,press_ref],epochs=ert_epochs, batch_size=ert_batch_size,shuffle=True,validation_data=([X_val_C,X_val_H,X_val_N,X_val_O,X_at_val],[ener_val,forces1V,forces2V,forces3V,forces4V,press_val]),callbacks=callbacks_list)
+    history=rtmodel.fit([X_C,X_H,X_N,X_O,X_at,C_m,H_m,N_m,O_m],[ener_ref,forces1,forces2,forces3,forces4,press_ref],epochs=ert_epochs, batch_size=ert_batch_size,shuffle=True,validation_data=([X_val_C,X_val_H,X_val_N,X_val_O,X_at_val,C_mV,H_mV,N_mV,O_mV],[ener_val,forces1V,forces2V,forces3V,forces4V,press_val]),callbacks=callbacks_list)

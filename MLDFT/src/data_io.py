@@ -223,6 +223,74 @@ def get_all_data(data_list):
     X_el=np.vstack(El_list)
     return X_1,X_2,X_3,X_4,Prop,dataset_at1,dataset_at2,dataset_at3,dataset_at4,X_at,X_el
 
+
+def chg_data(dataset1,basis_mat,i1,i2,i3,i4,padding_size):
+    dataset_at1=dataset1[0:i1]
+    basis_at1=basis_mat[0:i1].reshape(i1,9)
+    dataset_at2=dataset1[i1:i1+i2]
+    basis_at2=basis_mat[i1:i1+i2].reshape(i2,9)
+    if i3!= 0:
+        dataset_at3=dataset1[i1+i2:i1+i2+i3]
+        basis_at3=basis_mat[i1+i2:i1+i2+i3].reshape(i3,9)
+    else:
+        dataset_at3=np.array([0]*360).reshape(1,360)
+        basis_at3=np.array(([0]*9)).reshape(1,9)
+    if i4!=0:
+        dataset_at4=dataset1[i1+i2+i3:]
+        basis_at4=basis_mat[i1+i2+i3:].reshape(i4,9)
+    else:
+        dataset_at4=np.array(([0]*360)).reshape(1,360)
+        basis_at4=np.array(([0]*9)).reshape(1,9)
+
+    del dataset1,basis_mat
+    C_at=np.array([0]*padding_size)
+    C_at[:i1]=1
+    H_at=np.array([0]*padding_size)
+    H_at[:i2]=1
+    N_at=np.array([0]*padding_size)
+    N_at[:i3]=1
+    O_at=np.array([0]*padding_size)
+    O_at[:i4]=1
+    C_m=np.reshape(C_at,(1,padding_size,1))
+    H_m=np.reshape(H_at,(1,padding_size,1))
+    N_m=np.reshape(N_at,(1,padding_size,1))
+    O_m=np.reshape(O_at,(1,padding_size,1))
+    X_tot_at1=pad_sequences(dataset_at1.T,maxlen=padding_size,dtype='float32',padding='post',value=0.0)
+    X_tot_at1=pad_sequences(dataset_at1.T,maxlen=padding_size,dtype='float32',padding='post',value=0.0)
+    base_at1=pad_sequences(basis_at1.T,maxlen=padding_size,dtype='float32',padding='post',value=0.0)
+    X_tot_at2=pad_sequences(dataset_at2.T,maxlen=padding_size,dtype='float32',padding='post',value=0.0)
+    base_at2=pad_sequences(basis_at2.T,maxlen=padding_size,dtype='float32',padding='post',value=0.0)
+    X_tot_at3=pad_sequences(dataset_at3.T,maxlen=padding_size,dtype='float32',padding='post',value=0.0)
+    base_at3=pad_sequences(basis_at3.T,maxlen=padding_size,dtype='float32',padding='post',value=0.0)
+    X_tot_at4=pad_sequences(dataset_at4.T,maxlen=padding_size,dtype='float32',padding='post',value=0.0)
+    base_at4=pad_sequences(basis_at4.T,maxlen=padding_size,dtype='float32',padding='post',value=0.0)
+    X_3D1=np.reshape(X_tot_at1.T,(1,padding_size,dataset_at1.shape[1]))
+    basis1=np.reshape(base_at1.T,(1,padding_size,9))
+    X_3D2=np.reshape(X_tot_at2.T,(1,padding_size,dataset_at2.shape[1]))
+    basis2=np.reshape(base_at2.T,(1,padding_size,9))
+    X_3D3=np.reshape(X_tot_at3.T,(1,padding_size,dataset_at3.shape[1]))
+    basis3=np.reshape(base_at3.T,(1,padding_size,9))
+    X_3D4=np.reshape(X_tot_at4.T,(1,padding_size,dataset_at4.shape[1]))
+    basis4=np.reshape(base_at4.T,(1,padding_size,9))
+
+    return X_3D1,X_3D2,X_3D3,X_3D4,basis1,basis2,basis3,basis4,C_m,H_m,N_m,O_m
+
+def dos_mask(C_m,H_m,N_m,O_m,padding_size):
+    C_d=np.reshape(C_m,(1,padding_size))
+    C_d_r=np.repeat(C_d,341,axis=1)
+    C_d=np.reshape(C_d_r,(1,padding_size,341))
+    H_d=np.reshape(H_m,(1,padding_size))
+    H_d_r=np.repeat(H_d,341,axis=1)
+    H_d=np.reshape(H_d_r,(1,padding_size,341))
+    N_d=np.reshape(N_m,(1,padding_size))
+    N_d_r=np.repeat(N_d,341,axis=1)
+    N_d=np.reshape(N_d_r,(1,padding_size,341))
+    O_d=np.reshape(O_m,(1,padding_size))
+    O_d_r=np.repeat(O_d,341,axis=1)
+    O_d=np.reshape(O_d_r,(1,padding_size,341))
+
+    return C_d,H_d,N_d,O_d
+
 def get_efp_data(data_list):
     ener_list=[]
     forces_pre_list=[]
@@ -254,9 +322,26 @@ def get_efp_data(data_list):
 
 def pad_dat(X_at_elem,X_pre_list,padding_size):
     X_list=[]
+    C_list=[]
+    H_list=[]
+    N_list=[]
+    O_list=[]
     for at_elem,dataset1 in zip(X_at_elem,X_pre_list):
         X_pad=get_fp_all(at_elem,dataset1,padding_size)
         X_list.append(X_pad.T)
+        C_at=np.array([0]*padding_size)
+        C_at[:at_elem[0]]=1
+        H_at=np.array([0]*padding_size)
+        H_at[:at_elem[1]]=1
+        N_at=np.array([0]*padding_size)
+        N_at[:at_elem[2]]=1
+        O_at=np.array([0]*padding_size)
+        O_at[:at_elem[3]]=1
+        C_list.append(C_at)
+        H_list.append(H_at)
+        N_list.append(N_at)
+        O_list.append(O_at)
+
     X=np.vstack(X_list)
     tot_conf=int(X.shape[0]/(4*padding_size))
     X_3D = np.reshape(X, (tot_conf,4, padding_size, X.shape[1]))
@@ -264,25 +349,57 @@ def pad_dat(X_at_elem,X_pre_list,padding_size):
     X_2=X_3D[:,1,:,:]
     X_3=X_3D[:,2,:,:]
     X_4=X_3D[:,3,:,:]
-    return X_1,X_2,X_3,X_4
+    C_m=np.vstack(C_list)
+    H_m=np.vstack(H_list)
+    N_m=np.vstack(N_list)
+    O_m=np.vstack(O_list)
+    C_m=np.reshape(C_m,(tot_conf,padding_size,1))
+    H_m=np.reshape(H_m,(tot_conf,padding_size,1))
+    N_m=np.reshape(N_m,(tot_conf,padding_size,1))
+    O_m=np.reshape(O_m,(tot_conf,padding_size,1))
+    return X_1,X_2,X_3,X_4,C_m,H_m,N_m,O_m
 
 
 def pad_efp_data(X_at_elem,X_pre_list,forces_pre_list,basis_pre_list,padding_size):
     X_list=[]
     basis_list=[]
     forces_list=[]
+    C_list=[]
+    H_list=[]
+    N_list=[]
+    O_list=[]
     for at_elem,dataset1,forces_data,basis_mat in zip(X_at_elem,X_pre_list,forces_pre_list,basis_pre_list):
         X_pad,basis_pad,forces_pad=get_fp_basis_F(at_elem,dataset1,forces_data,basis_mat,padding_size)
         X_list.append(X_pad.T)
         basis_list.append(basis_pad.T)
         forces_list.append(forces_pad.T)
+        C_at=np.array([0]*padding_size)
+        C_at[:at_elem[0]]=1
+        H_at=np.array([0]*padding_size)
+        H_at[:at_elem[1]]=1
+        N_at=np.array([0]*padding_size)
+        N_at[:at_elem[2]]=1
+        O_at=np.array([0]*padding_size)
+        O_at[:at_elem[3]]=1
+        C_list.append(C_at)
+        H_list.append(H_at)
+        N_list.append(N_at)
+        O_list.append(O_at)
     X=np.vstack(X_list)
     basis_ref=np.vstack(basis_list)
     force_ref=np.vstack(forces_list)
+    C_m=np.vstack(C_list)
+    H_m=np.vstack(H_list)
+    N_m=np.vstack(N_list)
+    O_m=np.vstack(O_list)
     tot_conf=int(X.shape[0]/(4*padding_size))
     X_3D = np.reshape(X, (tot_conf,4, padding_size, X.shape[1]))
     basis_3D=np.reshape(basis_ref, (tot_conf,4, padding_size, 9))
     forces_3D=np.reshape(force_ref,(tot_conf,4,padding_size,3))
+    C_m=np.reshape(C_m,(tot_conf,padding_size,1))
+    H_m=np.reshape(H_m,(tot_conf,padding_size,1))
+    N_m=np.reshape(N_m,(tot_conf,padding_size,1))
+    O_m=np.reshape(O_m,(tot_conf,padding_size,1))
     X_1=X_3D[:,0,:,:]
     X_2=X_3D[:,1,:,:]
     X_3=X_3D[:,2,:,:]
@@ -295,12 +412,25 @@ def pad_efp_data(X_at_elem,X_pre_list,forces_pre_list,basis_pre_list,padding_siz
     forces2=forces_3D[:,1,:,:]
     forces3=forces_3D[:,2,:,:]
     forces4=forces_3D[:,3,:,:]
-    return forces1,forces2,forces3,forces4,X_1,X_2,X_3,X_4,basis1,basis2,basis3,basis4
+    return forces1,forces2,forces3,forces4,X_1,X_2,X_3,X_4,basis1,basis2,basis3,basis4,C_m,H_m,N_m,O_m
 
-def pad_dos_dat(Prop_vbcb,X_1):
+def pad_dos_dat(Prop_vbcb,X_1,C_m,H_m,N_m,O_m,padding_size):
     tot_conf=int(X_1.shape[0])
     Prop_B=np.reshape(Prop_vbcb,(tot_conf,2))
-    return Prop_B
+    C_d=np.reshape(C_m,(tot_conf,padding_size))
+    C_d_r=np.repeat(C_d,341,axis=1)
+    C_d=np.reshape(C_d_r,(tot_conf,padding_size,341))
+    H_d=np.reshape(H_m,(tot_conf,padding_size))
+    H_d_r=np.repeat(H_d,341,axis=1)
+    H_d=np.reshape(H_d_r,(tot_conf,padding_size,341))
+    N_d=np.reshape(N_m,(tot_conf,padding_size))
+    N_d_r=np.repeat(N_d,341,axis=1)
+    N_d=np.reshape(N_d_r,(tot_conf,padding_size,341))
+    O_d=np.reshape(O_m,(tot_conf,padding_size))
+    O_d_r=np.repeat(O_d,341,axis=1)
+    O_d=np.reshape(O_d_r,(tot_conf,padding_size,341))
+
+    return Prop_B,C_d,H_d,N_d,O_d
 
 def get_e_dos_data(data_list):
     Prop_dos_list=[]

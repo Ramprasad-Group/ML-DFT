@@ -122,18 +122,26 @@ def init_DOSmod(padding_size):
         input3=Input(shape=(padding_size,700))
         input4=Input(shape=(padding_size,700))
         input5=Input(shape=(1,))
+        input6=Input(shape=(padding_size,341))
+        input7=Input(shape=(padding_size,341))
+        input8=Input(shape=(padding_size,341))
+        input9=Input(shape=(padding_size,341))
         model_out_C1=TimeDistributed(single_atom_modelC_1(),name='atom_dosC_1')(input1)
         model_out_H1=TimeDistributed(single_atom_modelH_1(),name='atom_dosH_1')(input2)
         model_out_N1=TimeDistributed(single_atom_modelN_1(),name='atom_dosN_1')(input3)
         model_out_O1=TimeDistributed(single_atom_modelO_1(),name='atom_dosO_1')(input4)
-        model_added1=Add()([model_out_C1, model_out_H1,model_out_N1,model_out_O1])
+        D_C=Lambda(lambda x: tf.math.multiply(x[0],x[1]),name='D_C')([input6,model_out_C1])
+        D_H=Lambda(lambda x: tf.math.multiply(x[0],x[1]),name='D_H')([input7,model_out_H1])
+        D_N=Lambda(lambda x: tf.math.multiply(x[0],x[1]),name='D_N')([input8,model_out_N1])
+        D_O=Lambda(lambda x: tf.math.multiply(x[0],x[1]),name='D_O')([input9,model_out_O1])
+        model_added1=Add()([D_C,D_H,D_N,D_O])
 
         model_s1=Lambda(lambda x: tf.keras.backend.sum(x,axis=1))(model_added1)
         model_dos=Lambda(lambda x: x/input5,name='DOS1')(model_s1)
         bands=Dense(100,activation='relu',activity_regularizer=l2(0.01))(model_dos)
         bands=Dense(100,activation='relu',activity_regularizer=l2(0.01))(bands)
         bands=Dense(2,activation='relu')(bands)
-        model= Model(inputs=[input1,input2,input3,input4,input5], outputs=[model_dos,bands])
+        model= Model(inputs=[input1,input2,input3,input4,input5,input6,input7,input8,input9], outputs=[model_dos,bands])
         opt = Adam(lr=0.0001, beta_1=0.9, beta_2=0.999)
         model.compile(loss="mean_squared_error",optimizer=opt,loss_weights=[1000,1])
 
@@ -150,12 +158,12 @@ def Dmodel_weights(train_dos,new_weights_dos,modelDOS):
         modelDOS.load_weights(CONFIG_PATH1)
 
 
-def DOS_pred(X_C,X_H,X_N,X_O,total_elec,modelDOS):
+def DOS_pred(X_C,X_H,X_N,X_O,total_elec,C_d,H_d,N_d,O_d,modelDOS):
     resultD = []
     resultvbcb=[]
     Dmodel_weights(train_dos,new_weights_dos,modelDOS)
     for i in range(100):
-        Pred,vbcb=modelDOS.predict([X_C,X_H,X_N,X_O,total_elec], batch_size=1)
+        Pred,vbcb=modelDOS.predict([X_C,X_H,X_N,X_O,total_elec,C_d,H_d,N_d,O_d], batch_size=1)
         resultD.append(Pred*total_elec)
         resultvbcb.append(vbcb)
     resultD=np.array(resultD)
@@ -202,12 +210,12 @@ def dos_data(file_loc,total_elec):
     Prop=np.array(dos)/total_elec
     return Prop, VB, CB
 
-def retrain_dosmodel(X_C,X_H,X_N,X_O,X_el,Prop_dos,vbcb,X_val_C,X_val_H,X_val_N,X_val_O,X_el_val,Prop_dos_val,vbcb_val,drt_epochs,drt_batch_size, drt_patience,padding_size):
+def retrain_dosmodel(X_C,X_H,X_N,X_O,X_el,C_d,H_d,N_d,O_d,Prop_dos,vbcb,X_val_C,X_val_H,X_val_N,X_val_O,X_el_val,C_dV,H_dV,N_dV,O_dV,Prop_dos_val,vbcb_val,drt_epochs,drt_batch_size, drt_patience,padding_size):
     filepath="newDOSmodel.hdf5"
     rtmodel = init_DOSmod(padding_size)
     rtmodel.load_weights(CONFIG_PATH1)
     checkpoint=ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=True,mode='min')
     early_stopping_cb = EarlyStopping(patience=drt_patience,restore_best_weights=True)
     callbacks_list = [checkpoint,early_stopping_cb]
-    history=rtmodel.fit([X_C,X_H,X_N,X_O,X_el],[Prop_dos,vbcb],epochs=drt_epochs, batch_size=drt_batch_size,shuffle=True,validation_data=([X_val_C,X_val_H,X_val_N,X_val_O,X_el_val],[Prop_dos_val,vbcb_val]),callbacks=callbacks_list)
+    history=rtmodel.fit([X_C,X_H,X_N,X_O,X_el,C_d,H_d,N_d,O_d],[Prop_dos,vbcb],epochs=drt_epochs, batch_size=drt_batch_size,shuffle=True,validation_data=([X_val_C,X_val_H,X_val_N,X_val_O,X_el_val,C_dV,H_dV,N_dV,O_dV],[Prop_dos_val,vbcb_val]),callbacks=callbacks_list)
  

@@ -8,7 +8,7 @@ drt_epochs=50
 drt_batch_size=10
 drt_patience=10
 new_weights_e=False #False #True
-new_weights_dos=False #False #True
+new_weights_dos=True #False #True
 test_chg = True #False #True
 test_e = True #False #True
 test_dos = True #False #True
@@ -24,6 +24,6 @@ num_gamma = 18
 #For plotting
 plot_dos=True
 comp_chg=False
-write_chg=True
+write_chg=False
 ref_chg=False
-grid_spacing=0.5
+grid_spacing=0.7

@@ -762,7 +762,7 @@ def chg_predict(X_3D1,X_3D2,X_3D3,X_3D4,i1,i2,i3,i4,sites_elem,modelCHG,at_elem)
             jj=jj+1
     return Coef_at1,Coef_at2,Coef_at3,Coef_at4,C_at_charge,H_at_charge,N_at_charge,O_at_charge
 
-def C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,tot_C,count,jj):
+def C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,tot_C,count,jj,iden,tot_chg):
     charge=0
     pos=x.coords
     pos_frac=x.frac_coords
@@ -795,6 +795,17 @@ def C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,
     coords_shape=kr.shape[0]
     partsCHG=math.ceil(coords_shape/coords_limit)
     if coords_shape > coords_limit:
+        if tot_chg:
+            if iden==1:
+                c_coef_1s=np.array([116.578026855869,112.510252969745,41.165379246020,56.773590524042,86.402676630032,63.577812378632,0.637955734166,44.707906728918,71.946789359638,105.619710421794,38.996281296036,88.894683580824,9.202881074009])
+                c_exp_1s=np.array([324.387996761133,177.399068268376,50.940492722610,4073.371026571095,95.863341632517,110803.674121156117,14.516932727395,8458.147167515093,2075.892101482822,593.471652826499,20211.367729746886,1097.306310034251,27.454141193838])
+            elif iden==2:
+                c_coef_1s=np.array([162.741399115522,1.000590152363,120.717723038064,65.800446492523,176.972282692795,70.279948577080,97.856043902832,127.188202750892,15.158261318857,78.581279593310,147.872961853726,121.986697165618,169.430095505507])
+                c_exp_1s=np.array([224.998268113168,20.137330366020,113070.822303298963,70.515523980315,392.151336096174,20996.404792315752,4456.523128073991,128.364544225048,38.128008571196,9020.825868609380,1255.100280831314,2325.453330503726,694.286492554629])
+            elif iden==3:
+                c_coef_1s=np.array([3.894908509869,142.249270911306,50.657031837569,126.375241189918,218.051260068246,192.172719533969,0.408943286657,115.196635211020,210.000163764055,242.782693209721,250.696858077352,121.091043858451,8.165223094803,44.126392088493,216.928704406869,114.664105986775])
+                c_exp_1s=np.array([2664.774694202190,5147.982644234844,2747.036781808482,115.306011217834,998.024205222061,1664.421679207663,22.251540530064,2920.109248055150,115613.602533650555,600.292587465404,355.059222702842,9850.273163919423,39.286718666097,67.119899157727,204.056327537959,21979.010168625922])
+            core_chg=np.sum([s_chg(0,c_exp_1s,c_coef_1s,k_r[:coords_limit])],axis=0)
         chg_1s=s_chg(0,exps_1s,coefs_1s,k_r[:coords_limit])
         chg_2s=s_chg(1,exps_2s,coefs_2s,k_r[:coords_limit])
         chg_3s=s_chg(2,exps_3s,coefs_3s,k_r[:coords_limit])
@@ -816,6 +827,17 @@ def C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,
         chg_5g=g_chg(0,exps_5g,coefs_5g1,coefs_5g2,coefs_5g3,coefs_5g4,coefs_5g5,coefs_5g6,coefs_5g7,coefs_5g8,coefs_5g9,new_coords[:coords_limit],k_r[:coords_limit])
         lpart=1
         for lpart in range(2,partsCHG):
+            if tot_chg:
+                if iden==1:
+                    c_coef_1s=np.array([116.578026855869,112.510252969745,41.165379246020,56.773590524042,86.402676630032,63.577812378632,0.637955734166,44.707906728918,71.946789359638,105.619710421794,38.996281296036,88.894683580824,9.202881074009])
+                    c_exp_1s=np.array([324.387996761133,177.399068268376,50.940492722610,4073.371026571095,95.863341632517,110803.674121156117,14.516932727395,8458.147167515093,2075.892101482822,593.471652826499,20211.367729746886,1097.306310034251,27.454141193838])
+                elif iden==2:
+                    c_coef_1s=np.array([162.741399115522,1.000590152363,120.717723038064,65.800446492523,176.972282692795,70.279948577080,97.856043902832,127.188202750892,15.158261318857,78.581279593310,147.872961853726,121.986697165618,169.430095505507])
+                    c_exp_1s=np.array([224.998268113168,20.137330366020,113070.822303298963,70.515523980315,392.151336096174,20996.404792315752,4456.523128073991,128.364544225048,38.128008571196,9020.825868609380,1255.100280831314,2325.453330503726,694.286492554629])
+                elif iden==3:
+                    c_coef_1s=np.array([3.894908509869,142.249270911306,50.657031837569,126.375241189918,218.051260068246,192.172719533969,0.408943286657,115.196635211020,210.000163764055,242.782693209721,250.696858077352,121.091043858451,8.165223094803,44.126392088493,216.928704406869,114.664105986775])
+                    c_exp_1s=np.array([2664.774694202190,5147.982644234844,2747.036781808482,115.306011217834,998.024205222061,1664.421679207663,22.251540530064,2920.109248055150,115613.602533650555,600.292587465404,355.059222702842,9850.273163919423,39.286718666097,67.119899157727,204.056327537959,21979.010168625922])
+                core_chg=np.append(core_chg,np.sum([s_chg(0,c_exp_1s,c_coef_1s,k_r[(coords_limit)*(lpart-1):coords_limit*lpart])],axis=0))
             chg_1s=np.append(chg_1s,s_chg(0,exps_1s,coefs_1s,k_r[(coords_limit)*(lpart-1):coords_limit*lpart]))
             chg_2s=np.append(chg_2s,s_chg(1,exps_2s,coefs_2s,k_r[(coords_limit)*(lpart-1):coords_limit*lpart]))
             chg_3s=np.append(chg_3s,s_chg(2,exps_3s,coefs_3s,k_r[(coords_limit)*(lpart-1):coords_limit*lpart]))
@@ -836,6 +858,17 @@ def C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,
             chg_5f=np.append(chg_5f,f_chg(1,exps_5f,coefs_5f1,coefs_5f2,coefs_5f3,coefs_5f4,coefs_5f5,coefs_5f6,coefs_5f7,new_coords[(coords_limit)*(lpart-1):coords_limit*lpart],k_r[(coords_limit)*(lpart-1):coords_limit*lpart]))
             chg_5g=np.append(chg_5g,g_chg(0,exps_5g,coefs_5g1,coefs_5g2,coefs_5g3,coefs_5g4,coefs_5g5,coefs_5g6,coefs_5g7,coefs_5g8,coefs_5g9,new_coords[(coords_limit)*(lpart-1):coords_limit*lpart],k_r[(coords_limit)*(lpart-1):coords_limit*lpart]))
 
+        if tot_chg:
+            if iden==1:
+                c_coef_1s=np.array([116.578026855869,112.510252969745,41.165379246020,56.773590524042,86.402676630032,63.577812378632,0.637955734166,44.707906728918,71.946789359638,105.619710421794,38.996281296036,88.894683580824,9.202881074009])
+                c_exp_1s=np.array([324.387996761133,177.399068268376,50.940492722610,4073.371026571095,95.863341632517,110803.674121156117,14.516932727395,8458.147167515093,2075.892101482822,593.471652826499,20211.367729746886,1097.306310034251,27.454141193838])
+            elif iden==2:
+                c_coef_1s=np.array([162.741399115522,1.000590152363,120.717723038064,65.800446492523,176.972282692795,70.279948577080,97.856043902832,127.188202750892,15.158261318857,78.581279593310,147.872961853726,121.986697165618,169.430095505507])
+                c_exp_1s=np.array([224.998268113168,20.137330366020,113070.822303298963,70.515523980315,392.151336096174,20996.404792315752,4456.523128073991,128.364544225048,38.128008571196,9020.825868609380,1255.100280831314,2325.453330503726,694.286492554629])
+            elif iden==3:
+                c_coef_1s=np.array([3.894908509869,142.249270911306,50.657031837569,126.375241189918,218.051260068246,192.172719533969,0.408943286657,115.196635211020,210.000163764055,242.782693209721,250.696858077352,121.091043858451,8.165223094803,44.126392088493,216.928704406869,114.664105986775])
+                c_exp_1s=np.array([2664.774694202190,5147.982644234844,2747.036781808482,115.306011217834,998.024205222061,1664.421679207663,22.251540530064,2920.109248055150,115613.602533650555,600.292587465404,355.059222702842,9850.273163919423,39.286718666097,67.119899157727,204.056327537959,21979.010168625922])
+            core_chg=np.append(core_chg,np.sum([s_chg(0,c_exp_1s,c_coef_1s,k_r[coords_limit*lpart:])],axis=0)) 
         chg_1s=np.append(chg_1s,s_chg(0,exps_1s,coefs_1s,k_r[coords_limit*lpart:]))
         chg_2s=np.append(chg_2s,s_chg(1,exps_2s,coefs_2s,k_r[coords_limit*lpart:]))
         chg_3s=np.append(chg_3s,s_chg(2,exps_3s,coefs_3s,k_r[coords_limit*lpart:]))
@@ -857,6 +890,17 @@ def C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,
         chg_5g=np.append(chg_5g,g_chg(0,exps_5g,coefs_5g1,coefs_5g2,coefs_5g3,coefs_5g4,coefs_5g5,coefs_5g6,coefs_5g7,coefs_5g8,coefs_5g9,new_coords[coords_limit*lpart:],k_r[coords_limit*lpart:]))
 
     else:
+        if tot_chg:
+            if iden==1:
+                c_coef_1s=np.array([116.578026855869,112.510252969745,41.165379246020,56.773590524042,86.402676630032,63.577812378632,0.637955734166,44.707906728918,71.946789359638,105.619710421794,38.996281296036,88.894683580824,9.202881074009])
+                c_exp_1s=np.array([324.387996761133,177.399068268376,50.940492722610,4073.371026571095,95.863341632517,110803.674121156117,14.516932727395,8458.147167515093,2075.892101482822,593.471652826499,20211.367729746886,1097.306310034251,27.454141193838])
+            elif iden==2:
+                c_coef_1s=np.array([162.741399115522,1.000590152363,120.717723038064,65.800446492523,176.972282692795,70.279948577080,97.856043902832,127.188202750892,15.158261318857,78.581279593310,147.872961853726,121.986697165618,169.430095505507])
+                c_exp_1s=np.array([224.998268113168,20.137330366020,113070.822303298963,70.515523980315,392.151336096174,20996.404792315752,4456.523128073991,128.364544225048,38.128008571196,9020.825868609380,1255.100280831314,2325.453330503726,694.286492554629])
+            elif iden==3:
+                c_coef_1s=np.array([3.894908509869,142.249270911306,50.657031837569,126.375241189918,218.051260068246,192.172719533969,0.408943286657,115.196635211020,210.000163764055,242.782693209721,250.696858077352,121.091043858451,8.165223094803,44.126392088493,216.928704406869,114.664105986775])
+                c_exp_1s=np.array([2664.774694202190,5147.982644234844,2747.036781808482,115.306011217834,998.024205222061,1664.421679207663,22.251540530064,2920.109248055150,115613.602533650555,600.292587465404,355.059222702842,9850.273163919423,39.286718666097,67.119899157727,204.056327537959,21979.010168625922])
+            core_chg=np.sum([s_chg(0,c_exp_1s,c_coef_1s,k_r)],axis=0)
         chg_1s=s_chg(0,exps_1s,coefs_1s,k_r)
         chg_2s=s_chg(1,exps_2s,coefs_2s,k_r)
         chg_3s=s_chg(2,exps_3s,coefs_3s,k_r)
@@ -905,7 +949,8 @@ def C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,
     del tot_f
     tot_C=tot_C+chg_5g
     del chg_1s,chg_2s,chg_3s,chg_4s,chg_5s,chg_6s,chg_7s,chg_2p,chg_3p,chg_4p,chg_5p,chg_6p,chg_3d,chg_4d,chg_5d,chg_6d,chg_4f,chg_5f,chg_5g
-
+    if tot_chg:
+        tot_C=tot_C+core_chg
     return tot_C
 
 def H_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,tot_H,count,jj):
@@ -1021,7 +1066,7 @@ def H_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,
     del chg_1s,chg_2s,chg_3s,chg_4s,chg_2p,chg_3p,chg_4p,chg_3d,chg_4d,chg_5d,chg_4f,chg_5f,chg_5g
     return tot_H
 
-def chg_pred_data(poscar_data, at_elem,sites_elem, Coef_at1, Coef_at2,Coef_at3,Coef_at4, chg_coor, dim,vol):
+def chg_pred_data(poscar_data, at_elem,sites_elem, Coef_at1, Coef_at2,Coef_at3,Coef_at4, chg_coor, dim,vol,tot_chg):
     
     tot_C=[]
     tot_H=[]
@@ -1034,10 +1079,14 @@ def chg_pred_data(poscar_data, at_elem,sites_elem, Coef_at1, Coef_at2,Coef_at3,C
             coefs=Coef_at1
             jj=0
             count=0
+            iden=1
             for x in sites_elem[pp]:
-                tot_C=C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,tot_C,count,jj)
+                tot_C=C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,tot_C,count,jj,iden,tot_chg)
+#                if tot_chg:
+#                    core_chg=C_core()
                 jj=jj+1
                 count=count+1
+
 
             
         else:
@@ -1058,6 +1107,7 @@ def chg_pred_data(poscar_data, at_elem,sites_elem, Coef_at1, Coef_at2,Coef_at3,C
         coefs=Coef_at3
         jj=0
         count=0
+        iden=2
         N_at_charge=[]
         for x in sites_elem[2]:
             tot_N=C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,tot_N,count,jj)
@@ -1073,6 +1123,7 @@ def chg_pred_data(poscar_data, at_elem,sites_elem, Coef_at1, Coef_at2,Coef_at3,C
         coefs=Coef_at4
         jj=0
         count=0
+        iden=3
         O_at_charge=[]
         for x in sites_elem[3]:
             tot_O=C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,tot_O,count,jj)

@@ -25,33 +25,33 @@ For more info on the format of the necessary files for training, you can look at
 
 ## List of Input commands in inp_params.py
 
-*train_e*: do you want to retrain the potential energy, forces and stress model? True or False
-*ert_epochs*: number of epochs when retraining the potential energy model
-*ert_batch_size*: batch size for retraining the potential energy model
-*ert_patience*: how many epochs to wait without imrpoving the validation loss until the potential energy stops retraining
-*train_dos*: do you want to retrain the DOS and VBM/CBM model? Is either True or False 
-*drt_epochs*: number of epochs when retraining the DOS model
-*drt_batch_size*: batch size for retrainign the DOS model
-*drt_patience*: how many epochs to wait without imrpoving the validation loss until the DOS stops retraining
-*new_weights_e*: do you have new weights for the potential energy from a previous retraining you would like to use for testing? True or False
-*new_weights_dos*: do you have new weights for the DOS and VB/CB from a previous retraining you would like to use for testing? True or False
-*test_chg*: do you want to predict the valence electron density? True or False
-*tot_chg*: do you want to include the core electron density in the prediction? True or False
-*test_e*: do you want to predict the potential energy, atomic forces and stress tensor? True or False
-*test_dos*: do you want to predict the DOS, VBM and CBM? True or False
+* *train_e*: do you want to retrain the potential energy, forces and stress model? True or False
+* *ert_epochs*: number of epochs when retraining the potential energy model
+* *ert_batch_size*: batch size for retraining the potential energy model
+* *ert_patience*: how many epochs to wait without imrpoving the validation loss until the potential energy stops retraining
+* *train_dos*: do you want to retrain the DOS and VBM/CBM model? Is either True or False 
+* *drt_epochs*: number of epochs when retraining the DOS model
+* *drt_batch_size*: batch size for retrainign the DOS model
+* *drt_patience*: how many epochs to wait without imrpoving the validation loss until the DOS stops retraining
+* *new_weights_e*: do you have new weights for the potential energy from a previous retraining you would like to use for testing? True or False
+* *new_weights_dos*: do you have new weights for the DOS and VB/CB from a previous retraining you would like to use for testing? True or False
+* *test_chg*: do you want to predict the valence electron density? True or False
+* *tot_chg*: do you want to include the core electron density in the prediction? True or False
+* *test_e*: do you want to predict the potential energy, atomic forces and stress tensor? True or False
+* *test_dos*: do you want to predict the DOS, VBM and CBM? True or False
 
-*cut_off_rad*: distance at which we stop considering neighboring atoms during fingerprinting
-*batch_size_fp*: largest amount of atoms of each element in the structure (for fingerprinting)
-*widest_gaussian*: size of the widest gaussian when fingerprinting 
-*narrowest_gaussian*: size of narrowest gaussian when fingerprinting
-*num_gamma*: number of gamma values to consider when fingerprinting
+* *cut_off_rad*: distance at which we stop considering neighboring atoms during fingerprinting
+* *batch_size_fp*: largest amount of atoms of each element in the structure (for fingerprinting)
+* *widest_gaussian*: size of the widest gaussian when fingerprinting 
+* *narrowest_gaussian*: size of narrowest gaussian when fingerprinting
+* *num_gamma*: number of gamma values to consider when fingerprinting
 
-*plot_dos*: do you want to plot the DOS? True or False
-*comp_chg*: do you want to compare the predicted valence electron density with a reference charge densiy? True or False
-*write_chg*: do you want to write the valence electron density into a set of grid points in 3D? True or False
-*tot_chg*: do you want to include the core electron density when writting out the charge density? True or False (IMPORTANT!: If you choose tot_chg=True and comp_chg=True, the program expects the reference CHGCAR to have the total electron density. Otherwise, it will compare a total electron density with a valence electron density and the error will be very high.)
-*ref_chg*: do you want to write the predicted valence (or total) electron density onto the same grid as a reference electron density? True or False. (IMPORTANT: If tot_chg=True, the reference CHGCAR can only be of the valence electron density as long as it is only used for the same grid points and not for data comparison)
-*grid_spacing*: if ref_chg=False, you can choose the grid spacing for the grid points in 3D. We recommend between 0.2 and 0.7. The smaller the spacing, the more grid points and longer it will take. The grid spacing does not affect the accuracy of the prediction, only the smoothness of the plotted electron density.
+* *plot_dos*: do you want to plot the DOS? True or False
+* *comp_chg*: do you want to compare the predicted valence electron density with a reference charge densiy? True or False
+* *write_chg*: do you want to write the valence electron density into a set of grid points in 3D? True or False
+* *tot_chg*: do you want to include the core electron density when writting out the charge density? True or False (IMPORTANT!: If you choose tot_chg=True and comp_chg=True, the program expects the reference CHGCAR to have the total electron density. Otherwise, it will compare a total electron density with a valence electron density and the error will be very high.)
+* *ref_chg*: do you want to write the predicted valence (or total) electron density onto the same grid as a reference electron density? True or False. (IMPORTANT: If tot_chg=True, the reference CHGCAR can only be of the valence electron density as long as it is only used for the same grid points and not for data comparison)
+* *grid_spacing*: if ref_chg=False, you can choose the grid spacing for the grid points in 3D. We recommend between 0.2 and 0.7. The smaller the spacing, the more grid points and longer it will take. The grid spacing does not affect the accuracy of the prediction, only the smoothness of the plotted electron density.
 
 ## Running ML_DFT
 

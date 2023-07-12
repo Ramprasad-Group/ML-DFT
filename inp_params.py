@@ -10,7 +10,6 @@ drt_patience=10
 new_weights_e=False #False #True
 new_weights_dos=False #False #True
 test_chg = True #False #True
-tot_chg = False #False #True
 test_e = True #False #True
 test_dos = True #False #True
 
@@ -24,6 +23,7 @@ num_gamma = 18
 
 #For plotting
 plot_dos=True
+tot_chg = False
 comp_chg=False
 write_chg=True
 ref_chg=False

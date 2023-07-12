@@ -12,7 +12,7 @@ import pandas as pd
 import os
 import sys
 sys.path.append(os.getcwd())
-from inp_params import train_e,ert_epochs,ert_batch_size,ert_patience,train_dos,drt_epochs,drt_batch_size,drt_patience,test_chg,test_e,test_dos,plot_dos,write_chg,comp_chg,ref_chg,grid_spacing,batch_size_fp, num_gamma, cut_off_rad, widest_gaussian, narrowest_gaussian,fp_file
+from inp_params import train_e,ert_epochs,ert_batch_size,ert_patience,train_dos,drt_epochs,drt_batch_size,drt_patience,test_chg,test_e,test_dos,plot_dos,write_chg,comp_chg,ref_chg,grid_spacing,batch_size_fp, num_gamma, cut_off_rad, widest_gaussian, narrowest_gaussian,fp_file,tot_chg
 from sklearn.metrics import mean_absolute_error
 
 import time
@@ -44,6 +44,7 @@ class Input_parameters:
     drt_batch_size=drt_batch_size
     drt_patience=drt_patience
     test_chg=test_chg
+    tot_chg=tot_chg
     test_e=test_e
     test_dos=test_dos
     plot_dos=plot_dos
@@ -127,10 +128,10 @@ def ML_DFT(file_loc):
     if comp_chg:
         shutil.copy2(poscar_file, "Pred_CHG_test"+ localfile_loc +".dat")
         chg_coor,chg_den,num_pts=chg_ref(file_loc,vol, supercell)
-        Pred_chg=chg_pred_data(poscar_data,at_elem,sites_elem,Coef_at1,Coef_at2,Coef_at3,Coef_at4,chg_coor,dim,vol)
+        Pred_chg=chg_pred_data(poscar_data,at_elem,sites_elem,Coef_at1,Coef_at2,Coef_at3,Coef_at4,chg_coor,dim,vol,tot_chg)
         ae_chg=mean_absolute_error(chg_den,Pred_chg)*len(chg_den)
         dft_chg=np.sum(chg_den)
-        comp=total_elec*(ae_chg/dft_chg)
+        comp=100*(ae_chg/dft_chg)
         print("Predicted charge error (%):", comp)
     if write_chg:
         shutil.copy2(poscar_file, "Pred_CHG_test"+ localfile_loc +".dat")
@@ -139,7 +140,7 @@ def ML_DFT(file_loc):
         else:
             chg_coor,num_pts=chg_pts(poscar_data, supercell,grid_spacing)
         if not comp_chg:
-            Pred_chg=chg_pred_data(poscar_data,at_elem,sites_elem,Coef_at1,Coef_at2,Coef_at3,Coef_at4,chg_coor,dim,vol)
+            Pred_chg=chg_pred_data(poscar_data,at_elem,sites_elem,Coef_at1,Coef_at2,Coef_at3,Coef_at4,chg_coor,dim,vol,tot_chg)
         chg_print(Pred_chg,vol,localfile_loc,num_pts)
 
 if train_e or train_dos:

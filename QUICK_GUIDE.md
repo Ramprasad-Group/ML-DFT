@@ -6,7 +6,7 @@ If you just downloaded and installed the ML-DFT package and do not care about ho
 You will need the following files in the folder you are going to make the predictions on:
 
 * predict.csv : contains the direction to the POSCAR files with the structures
-* ML_DFT.py : code to run. No need to modify anything
+* KS_emulator.py : code to run. No need to modify anything
 * inp_params.py : Set of input commands to specify the code what to do. Look below to see what each command means.
 
 ## Training (and making predictions)
@@ -14,7 +14,7 @@ You will need the following files in the folder you are going to retrain the mod
 
 * Train.csv and Val.csv: location of POSCAR files to use for training and validation.
 * (predict.csv : contain the direction to the POSCAR files with the structures)
-* ML_DFT.py : code to run. No need to modify anything
+* KS_emulator.py : code to run. No need to modify anything
 * inp_params.py : Set of input commands for the code. Look below to see what each command means.
 
 IMPORTANT!: Depending on what model you want to retrain you will need the following files in your database:
@@ -36,6 +36,7 @@ For more info on the format of the necessary files for training, you can look at
 *new_weights_e*: do you have new weights for the potential energy from a previous retraining you would like to use for testing? True or False
 *new_weights_dos*: do you have new weights for the DOS and VB/CB from a previous retraining you would like to use for testing? True or False
 *test_chg*: do you want to predict the valence electron density? True or False
+*tot_chg*: do you want to include the core electron density in the prediction? True or False
 *test_e*: do you want to predict the potential energy, atomic forces and stress tensor? True or False
 *test_dos*: do you want to predict the DOS, VBM and CBM? True or False
 
@@ -48,8 +49,9 @@ For more info on the format of the necessary files for training, you can look at
 *plot_dos*: do you want to plot the DOS? True or False
 *comp_chg*: do you want to compare the predicted valence electron density with a reference charge densiy? True or False
 *write_chg*: do you want to write the valence electron density into a set of grid points in 3D? True or False
-*ref_chg*: do you want to write the predicted valence electron density onto the same grid as a reference electron density? True or False.
-*grid_spacing*: if ref_chg=False, you can choose the grid spacing for the grid points in 3D. We recommend between 0.2 and 0.7
+*tot_chg*: do you want to include the core electron density when writting out the charge density? True or False (IMPORTANT!: If you choose tot_chg=True and comp_chg=True, the program expects the reference CHGCAR to have the total electron density. Otherwise, it will compare a total electron density with a valence electron density and the error will be very high.)
+*ref_chg*: do you want to write the predicted valence (or total) electron density onto the same grid as a reference electron density? True or False. (IMPORTANT: If tot_chg=True, the reference CHGCAR can only be of the valence electron density as long as it is only used for the same grid points and not for data comparison)
+*grid_spacing*: if ref_chg=False, you can choose the grid spacing for the grid points in 3D. We recommend between 0.2 and 0.7. The smaller the spacing, the more grid points and longer it will take. The grid spacing does not affect the accuracy of the prediction, only the smoothness of the plotted electron density.
 
 ## Running ML_DFT
 

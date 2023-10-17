@@ -1110,7 +1110,7 @@ def chg_pred_data(poscar_data, at_elem,sites_elem, Coef_at1, Coef_at2,Coef_at3,C
         iden=2
         N_at_charge=[]
         for x in sites_elem[2]:
-            tot_N=C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,tot_N,count,jj)
+            tot_N=C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,tot_N,count,jj,iden,tot_chg)
             jj=jj+1
             count=count+1
                 
@@ -1126,7 +1126,7 @@ def chg_pred_data(poscar_data, at_elem,sites_elem, Coef_at1, Coef_at2,Coef_at3,C
         iden=3
         O_at_charge=[]
         for x in sites_elem[3]:
-            tot_O=C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,tot_O,count,jj)
+            tot_O=C_chg_print(x,cutoff_distance,coefs,sites_elem,poscar_data,chg_coor,dim,vol,tot_O,count,jj,iden,tot_chg)
             jj=jj+1
             count=count+1
 

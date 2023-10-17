@@ -23,7 +23,8 @@ num_gamma = 18
 
 #For plotting
 plot_dos=True
+tot_chg = False
 comp_chg=False
 write_chg=True
 ref_chg=False
-grid_spacing=0.5
+grid_spacing=0.7

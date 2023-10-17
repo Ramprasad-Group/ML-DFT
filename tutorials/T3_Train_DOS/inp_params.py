@@ -3,14 +3,14 @@ train_e = False #False #True
 ert_epochs=50
 ert_batch_size=10
 ert_patience=10
-train_dos = True #False #True
+train_dos = False #False #True
 drt_epochs=50
 drt_batch_size=10
 drt_patience=10
 new_weights_e=False #False #True
 new_weights_dos=False #False #True
 test_chg = True #False #True
-test_e = False #False #True
+test_e = True #False #True
 test_dos = True #False #True
 
 #Fingerprinting specific
@@ -23,7 +23,8 @@ num_gamma = 18
 
 #For plotting
 plot_dos=True
+tot_chg = False
 comp_chg=False
-write_chg=False
+write_chg=True
 ref_chg=False
-grid_spacing=0.5
+grid_spacing=0.7

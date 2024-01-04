@@ -5,16 +5,16 @@ If you just downloaded and installed the ML-DFT package and do not care about ho
 ## Making predictions with trained models from paper
 You will need the following files in the folder you are going to make the predictions on:
 
-* predict.csv : contains the direction to the POSCAR files with the structures
-* KS_emulator.py : code to run. No need to modify anything
+* predict.csv : contains the path of the directory containing the POSCAR files with the structures.
+* MLDFT.py : code to run. No need to modify anything
 * inp_params.py : Set of input commands to specify the code what to do. Look below to see what each command means.
 
 ## Training (and making predictions)
 You will need the following files in the folder you are going to retrain the models (and predict):
 
 * Train.csv and Val.csv: location of POSCAR files to use for training and validation.
-* (predict.csv : contain the direction to the POSCAR files with the structures)
-* KS_emulator.py : code to run. No need to modify anything
+* (predict.csv : contain the direction to the POSCAR files with the structures for prediction)
+* MLDFT.py : code to run. No need to modify anything
 * inp_params.py : Set of input commands for the code. Look below to see what each command means.
 
 IMPORTANT!: Depending on what model you want to retrain you will need the following files in your database:
@@ -60,5 +60,11 @@ Once you have the necessary files and command values in inp_params.py, just do:
 ```angular2
 python ML_DFT.py
 ```  
+## OUTPUT files
+If test_e and test_dos are true then the code will generate the following files
+* C_charges, H_charges, O_charges, N_charges files depending upon the type of atoms present in the structure
+* Pred_chargedensity.dat file containing the charge density of the system in the format similar to CHGCAR
+* DOS.dat and dos.png files containing the density of states of the values every 0.1 eV, after being shifted by the energy in vacuum and the DOS plot in png format, respectively.
+* OUT_DATA containing all the output data including the energy, forces, stress, VB, and CB.  
 
 If you run into an issue or have any questions about the code, we first recommend going through the tutorials and Google Colab. If it does not solve your problem, please contact the authors.

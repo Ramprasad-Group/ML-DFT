@@ -29,10 +29,10 @@ ML-DFT requires the following packages to be installed in order to function prop
 
 
 We recommend using Anaconda python, and creating a fresh conda environment for ML-DFT (e. g. `conda create -n MY_ENV_NAME`).
-
+Use the file cpu_mldft.txt file to clone the environment on any cpu machine. It includes all the packages. 
 Once all necessary packages are installed, clone the ML-DFT repository and install it using the *setup.py* included in the package.
 
 ```angular2
 python setup.py install
 ```
-
+To run the package for prediction and training follow QUICK_GUIDE.md

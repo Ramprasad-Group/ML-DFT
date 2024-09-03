@@ -1,5 +1,7 @@
 # ML-DFT
 
+# IMPORTANT NOTE: The code and data shared here is available for academic non-commercial use only
+
 ML-DFT is a combination of various deep learning models which predict various properties of the electronic structure of molecules and polymers at the DFT level: the electron density, density of states, and total potential energy (with forces and stress tensor). The only required input is the structure information in a POSCAR format. Additionally, the package allows the user to retrain some models using his/her own database. 
 
 
